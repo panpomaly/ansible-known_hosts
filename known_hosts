@@ -32,21 +32,20 @@ then
   port=22
 fi
 
-# default file = $HOME/.ssh/known_hosts
-if [ -z "$file" ]
-then
-  file=$HOME/.ssh/known_hosts
-fi
-
-if [ ! -e "$file" ]
-then
-  mkdir -p $(dirname $file)
-  touch $file
-fi
-
 if [ -z "$owner" ];
 then
   owner=$(whoami)
+fi
+
+# default file = $HOME/.ssh/known_hosts
+if [ -z "$file" ]
+then
+  file="\$HOME/.ssh/known_hosts"
+fi
+
+if su - $owner -c "[ ! -e \"$file\" ]"
+then
+  su - $owner -c "mkdir -p $(dirname $file) && touch $file"
 fi
 
 ip=$(dig $host +short)
